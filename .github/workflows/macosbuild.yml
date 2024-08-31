@@ -2,11 +2,11 @@ name: macOs build
 
 on:
   push:
-    branches: [ main, develop, 1.* ]
+    branches: [ develop, 1.* ]
     tags: 1.*
     
   pull_request:
-    branches: [ main, develop, 1.* ]
+    branches: [ develop, 1.* ]
 
 jobs:
   build:
