@@ -18,17 +18,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      
+
     - name: Installing Qt framework
       uses: jurplel/install-qt-action@v3
       with:
         version: ${{ matrix.qt }}
 
     - name: Running qmake
-      run:  cd $GITHUB_WORKSPACE; qmake pgmodeler.pro -r PREFIX=/Applications/pgModeler.app/Contents PGSQL_INC=`pg_config --includedir` PGSQL_LIB=`pg_config --libdir`/libpq.dylib CONFIG+=debug
+      run: cd $GITHUB_WORKSPACE; qmake pgmodeler.pro -r PREFIX=/Applications/pgModeler.app/Contents PGSQL_INC=`pg_config --includedir` PGSQL_LIB=`pg_config --libdir`/libpq.dylib CONFIG+=debug
     
     - name: Building pgModeler
       run: make -j6
-     
+
     - name: Deploying pgModeler
       run: make install
+
+    - name: Archive built binary
+      run: |
+        cd /Applications/pgModeler.app
+        tar -czf pgModeler.tar.gz Contents
+
+    - name: Upload binary as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: pgModeler-${{ matrix.qt }}
+        path: /Applications/pgModeler.app/pgModeler.tar.gz
